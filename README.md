@@ -1,5 +1,3 @@
-* confidential version: do not publish
-
 caminos
 =====
 
