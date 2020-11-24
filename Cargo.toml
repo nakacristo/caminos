@@ -3,6 +3,7 @@ name = "caminos"
 version = "0.1.0"
 authors = ["Cristóbal Camarero <cristobal.camarero@unican.es>"]
 edition = "2018"
+description = "A modular interconnection network simulator."
 publish = true
 keywords = ["simulator"]
 documentation = "https://docs.rs/caminos-lib"
