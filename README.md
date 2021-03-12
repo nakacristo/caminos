@@ -13,18 +13,18 @@ $ cargo install caminos
 
 Then you should  be able to run it.
 ```bash
-caminos --help
+$ caminos --help
 ```
 
 To perform a single simulation create a file `my_experiment.cfg` and execute the simulator. See the `caminos-lib` crate for documentation on its format.
 ```bash
-caminos my_experiment.cfg
+$ caminos my_experiment.cfg
 ```
 You may set the `--results` flags to write the simulation result into it instead of to stdout.
 
 For more complex experiments it is recommended to make a new directory `/path/to/my/experiment`. This directory should include a file `main.cfg` describing the experiment to perform and a file `main.od` describing the outputs to be generated. It may contain a file `remote` to help to `pull` result files launched remotely. Then, to run all the simulations locally and create the outputs execute the following.
 ```bash
-caminos /path/to/my/experiment
+$ caminos /path/to/my/experiment
 ```
 
 # Executing Simulations Using SLURM
@@ -60,5 +60,13 @@ local$ caminos /path/to/my/experiment --action=pull
 * You may now generate your desired outputs if you are so inclined.
 ```bash
 local$ caminos /path/to/my/experiment --action=output
+```
+
+# Special modes
+
+The `special` flag enables extra modes other than simulating scenarios. Currently the only such availale mode is exporting a topology. By setting `--special=export` and `--special_args='Export{...}'` it will create a topology file. An example command is the following.
+
+```bash
+$ caminos --special=export --special_args='Export{topology:RandomRegularGraph{routers:500,degree:20,servers_per_router:1},seed:5,filename:"the_topology_file"}'
 ```
 
