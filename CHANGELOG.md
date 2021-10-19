@@ -1,6 +1,17 @@
 # Change Log
 
+
+
+## [0.3.0]
+
+### 2021-10-19
+Remove warning in panic invocation.
+git tag 0.3.0 -m "v0.3.0"
+git commit -m "Closing version 0.3.0. keeping version-sync with caminos-lib."
+
+
 ## [0.2.0]
+
 
 ### 2021-03-12
 Updating toml to actually use caminos-lib-0.2

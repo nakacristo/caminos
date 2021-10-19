@@ -6,7 +6,7 @@ edition = "2018"
 description = "A modular interconnection network simulator."
 publish = true
 keywords = ["simulator"]
-documentation = "https://docs.rs/caminos-lib"
+documentation = "https://docs.rs/caminos"
 readme = "README.md"
 license = "MIT/Apache-2.0"
 
