@@ -2,6 +2,12 @@
 
 
 
+## [0.3.1]
+
+### 2021-10-20
+git commit -m "version 0.3.1 to sync with caminos-lib-0.3.1."
+git tag 0.3.1 -m "v0.3.1"
+
 ## [0.3.0]
 
 ### 2021-10-19
