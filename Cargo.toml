@@ -16,5 +16,5 @@ license = "MIT/Apache-2.0"
 getopts = "0.2"
 rand = "0.4"
 backtrace-on-stack-overflow = "0.1"
-#caminos-lib = "0.3.1"
-caminos-lib = { path = "../caminos-lib" }
+caminos-lib = "0.4.0"
+#caminos-lib = { path = "../caminos-lib" }

@@ -3,6 +3,7 @@
 ## [0.4.0]
 git tag 0.4.0 -m "v0.4.0"
 git commit -m "Into 0.4.0, mathing compatible caminos-lib."
+git commit -m "Use caminos-lib from crates.io"
 
 ### 2022-02-08
 Rely free arguments to `file_main`.
