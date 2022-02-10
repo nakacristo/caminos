@@ -151,6 +151,7 @@ fn special_export(args: &str, plugs:&Plugs)
 
 fn main()
 {
+	unsafe { backtrace_on_stack_overflow::enable(||println!("installed backtrace on stack overflow")); }
 	let args: Vec<String> = env::args().collect();
 
 	println!("git_id={}",get_git_id());
@@ -202,17 +203,28 @@ fn main()
 		}
 	}
 
-	let path=Path::new(&option_matches.free[0]);
-	if path.is_dir()
+	let action=if option_matches.opt_present("action")
 	{
-		let action=if option_matches.opt_present("action")
+		Action::from_str(&option_matches.opt_str("action").unwrap()).expect("Illegal action")
+	}
+	else
+	{
+		Action::LocalAndOutput
+	};
+	let path=Path::new(&option_matches.free[0]);
+
+
+	if path.is_dir() || (!path.exists() && match action {Action::Shell=>true,_=>false} )
+	{
+		if option_matches.free.len()>1
 		{
-			Action::from_str(&option_matches.opt_str("action").unwrap()).expect("Illegal action")
+			println!("WARNING: there are {} excess free arguments. This first fre argument is the path the rest is ignored.",option_matches.free.len());
+			println!("non-ignored arg {} is {}",0,option_matches.free[0]);
+			for (i,free_arg) in option_matches.free.iter().enumerate().skip(1)
+			{
+				println!("ignored arg {} is {}",i,free_arg);
+			}
 		}
-		else
-		{
-			Action::LocalAndOutput
-		};
 		let mut options= ExperimentOptions::default();
 		if option_matches.opt_present("source")
 		{
@@ -253,6 +265,7 @@ fn main()
 		{
 			None
 		};
-		return file_main(&mut f,&plugs,results_file);
+		let free_args=&option_matches.free[1..];
+		return file_main(&mut f,&plugs,results_file,free_args);
 	}
 }

@@ -1,6 +1,13 @@
 # Change Log
 
+## [0.4.0]
+git tag 0.4.0 -m "v0.4.0"
+git commit -m "Into 0.4.0, mathing compatible caminos-lib."
 
+### 2022-02-08
+Rely free arguments to `file_main`.
+Added a warning about ignored free arguments.
+Added some controls for empty folders and the --action=shell option.
 
 ## [0.3.1]
 
