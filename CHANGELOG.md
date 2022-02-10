@@ -1,6 +1,12 @@
 # Change Log
 
+## [0.4.1]
+### 2022-02-10
+git tag 0.4.1 -m "v0.4.1"
+git commit -m "bump for slurm bug"
+
 ## [0.4.0]
+### 2022-02-10
 git tag 0.4.0 -m "v0.4.0"
 git commit -m "Into 0.4.0, mathing compatible caminos-lib."
 git commit -m "Use caminos-lib from crates.io"
