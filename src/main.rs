@@ -80,7 +80,7 @@ use std::str::FromStr;
 use std::cell::{RefCell};
 use rand::{StdRng,SeedableRng};
 
-use caminos_lib::{get_git_id,directory_main,file_main,Plugs,
+use caminos_lib::{get_git_id,get_version_number,directory_main,file_main,Plugs,
 	topology::{self},
 	config_parser::{self,ConfigurationValue},
 	experiments::{Action,ExperimentOptions},
@@ -154,7 +154,7 @@ fn main()
 	unsafe { backtrace_on_stack_overflow::enable(||println!("installed backtrace on stack overflow")); }
 	let args: Vec<String> = env::args().collect();
 
-	println!("git_id={}",get_git_id());
+	println!("git_id={} version_number={}",get_git_id(),get_version_number());
 
 	//println!("{:?}", args);
 	//if args.len()!=2

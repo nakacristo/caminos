@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.4.2]
+git tag 0.4.2 -m "v0.4.2"
+git commit -m "include version number"
+
 ## [0.4.1]
 ### 2022-02-10
 git tag 0.4.1 -m "v0.4.1"
