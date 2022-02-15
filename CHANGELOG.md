@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.4.3]
+git tag 0.4.3 -m "v0.4.3"
+git commit -m "bump to 0.4.3"
+
 ## [0.4.2]
 git tag 0.4.2 -m "v0.4.2"
 git commit -m "include version number"
