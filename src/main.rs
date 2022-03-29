@@ -78,7 +78,7 @@ use std::path::{Path};
 use getopts::{Options};
 use std::str::FromStr;
 use std::cell::{RefCell};
-use rand::{StdRng,SeedableRng};
+use rand::{rngs::StdRng,SeedableRng};
 
 use caminos_lib::{get_git_id,get_version_number,directory_main,file_main,Plugs,
 	topology::{self},
@@ -142,7 +142,15 @@ fn special_export(args: &str, plugs:&Plugs)
 	let topology_cfg=topology.expect("There were no topology.");
 	let format=format.unwrap_or(0);
 	let filename=filename.expect("There were no filename.");
-	let rng=RefCell::new(StdRng::from_seed(&[seed]));
+	let rng=RefCell::new(StdRng::from_seed({
+		//changed from rand-0.4 to rand-0.8
+		let mut std_rng_seed = [0u8;32];
+		for (index,value) in seed.to_ne_bytes().iter().enumerate()
+		{
+			std_rng_seed[index]=*value;
+		}
+		std_rng_seed
+	}));
 	let topology = topology::new_topology(topology::TopologyBuilderArgument{cv:&topology_cfg,plugs,rng:&rng});
 	let mut topology_file=File::create(&filename).expect("Could not create topology file");
 	topology.write_adjacencies_to_file(&mut topology_file,format).expect("Failed writing topology to file");

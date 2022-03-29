@@ -2,6 +2,10 @@
 
 ## [next 0.4.4??]
 
+
+### 2022-03-29
+Upgraded dependency rand-0.4 to rand-0.8.
+
 ### 2022-02-21
 git commit -m "Select local caminos-lib."
 

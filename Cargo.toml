@@ -14,7 +14,7 @@ license = "MIT/Apache-2.0"
 
 [dependencies]
 getopts = "0.2"
-rand = "0.4"
+rand = "0.8"
 backtrace-on-stack-overflow = "0.1"
 #caminos-lib = "0.4.3"
 caminos-lib = { path = "../caminos-lib" }
