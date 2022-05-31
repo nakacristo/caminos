@@ -73,88 +73,8 @@ $ caminos --special=export --special_args='Export{topology:RandomRegularGraph{ro
 */
 
 use std::env;
-use std::fs::{File};
-use std::path::{Path};
-use getopts::{Options};
-use std::str::FromStr;
-use std::cell::{RefCell};
-use rand::{rngs::StdRng,SeedableRng};
 
-use caminos_lib::{get_git_id,get_version_number,directory_main,file_main,Plugs,
-	topology::{self},
-	config_parser::{self,ConfigurationValue},
-	experiments::{Action,ExperimentOptions},
-	};
-fn special_export(args: &str, plugs:&Plugs)
-{
-	let topology_cfg = match config_parser::parse(args)
-	{
-		Ok(x) => match x
-		{
-			config_parser::Token::Value(value) => value,
-			_ => panic!("Not a value"),
-		},
-		Err(x) => panic!("Error parsing topology to export ({:?})",x),
-	};
-	let mut topology = None;
-	let mut seed = None;
-	let mut format = None;
-	let mut filename = None;
-	if let ConfigurationValue::Object(ref cv_name, ref cv_pairs)=topology_cfg
-	{
-		if cv_name!="Export"
-		{
-			panic!("A Export must be created from a `Export` object not `{}`",cv_name);
-		}
-		for &(ref name,ref value) in cv_pairs
-		{
-			//match name.as_ref()
-			match AsRef::<str>::as_ref(&name)
-			{
-				"topology" =>
-				{
-					topology=Some(value);
-				},
-				"seed" => match value
-				{
-					&ConfigurationValue::Number(f) => seed=Some(f as usize),
-					_ => panic!("bad value for seed"),
-				},
-				"format" => match value
-				{
-					&ConfigurationValue::Number(f) => format=Some(f as usize),
-					_ => panic!("bad value for format"),
-				},
-				"filename" => match value
-				{
-					&ConfigurationValue::Literal(ref s) => filename=Some(s.to_string()),
-					_ => panic!("bad value for filename"),
-				},
-				_ => panic!("Nothing to do with field {} in Export",name),
-			}
-		}
-	}
-	else
-	{
-		panic!("Trying to create a Export from a non-Object");
-	}
-	let seed=seed.unwrap_or(42);
-	let topology_cfg=topology.expect("There were no topology.");
-	let format=format.unwrap_or(0);
-	let filename=filename.expect("There were no filename.");
-	let rng=RefCell::new(StdRng::from_seed({
-		//changed from rand-0.4 to rand-0.8
-		let mut std_rng_seed = [0u8;32];
-		for (index,value) in seed.to_ne_bytes().iter().enumerate()
-		{
-			std_rng_seed[index]=*value;
-		}
-		std_rng_seed
-	}));
-	let topology = topology::new_topology(topology::TopologyBuilderArgument{cv:&topology_cfg,plugs,rng:&rng});
-	let mut topology_file=File::create(&filename).expect("Could not create topology file");
-	topology.write_adjacencies_to_file(&mut topology_file,format).expect("Failed writing topology to file");
-}
+use caminos_lib::{get_git_id,get_version_number,Plugs};
 
 
 fn main()
@@ -164,29 +84,15 @@ fn main()
 
 	println!("git_id={} version_number={}",get_git_id(),get_version_number());
 
-	//println!("{:?}", args);
-	//if args.len()!=2
-	//{
-	//	println!("Use:\n\t{} configuration_filename",args[0]);
-	//	return;
-	//}
-	
-	let mut opts = Options::new();
-	//opts.optopt("l","launch","selected launching method (for directory experiment)","METHOD");
-	opts.optopt("a","action","selected action to execute (for directory experiment)","METHOD");
-	opts.optopt("r","results","file in which to write the simulation results (for file experiment)","FILE");
-	opts.optopt("s","start_index","experiment index in which to start processing","INDEX");
-	opts.optopt("e","end_index","experiment index in which to end processing","INDEX");
-	opts.optopt("x","special","some special execution","SPECIAL_VALUE");
-	opts.optopt("","special_args","arguments for special execution","SPECIAL_VALUE");
-	opts.optopt("f","source","copy matching results from another path experiment","PATH");
-	opts.optopt("w","where","select the subset of indices for which the configuration expression evaluates to true","EXPRESION");
-	opts.optopt("m","message","write a message into the journal file","TEXT");
-	opts.optflag("h","help","show this help");
+	let opts = caminos_lib::terminal_default_options();
 	let option_matches= match opts.parse(&args[1..])
 	{
 		Ok(m) => m,
-		Err(f) => panic!("{}",f.to_string()),
+		Err(e) =>
+		{
+			eprintln!("Error when parsing options: {e}\n");
+			std::process::exit(-1);
+		}
 	};
 
 	if (option_matches.free.is_empty() && !option_matches.opt_present("special")) || option_matches.opt_present("help")
@@ -204,76 +110,16 @@ fn main()
 		{
 			"export" =>
 			{
-				special_export(&option_matches.opt_str("special_args").unwrap(),&plugs);
+				caminos_lib::special_export(&option_matches.opt_str("special_args").unwrap(),&plugs);
 				return;
 			},
 			_ => panic!("unrecognized special function {}",special_str),
 		}
 	}
 
-	let action=if option_matches.opt_present("action")
+	if let Err(error) = caminos_lib::terminal_main_normal_opts(&args,&plugs,option_matches)
 	{
-		Action::from_str(&option_matches.opt_str("action").unwrap()).expect("Illegal action")
-	}
-	else
-	{
-		Action::LocalAndOutput
-	};
-	let path=Path::new(&option_matches.free[0]);
-
-
-	if path.is_dir() || (!path.exists() && match action {Action::Shell=>true,_=>false} )
-	{
-		if option_matches.free.len()>1
-		{
-			println!("WARNING: there are {} excess free arguments. This first fre argument is the path the rest is ignored.",option_matches.free.len());
-			println!("non-ignored arg {} is {}",0,option_matches.free[0]);
-			for (i,free_arg) in option_matches.free.iter().enumerate().skip(1)
-			{
-				println!("ignored arg {} is {}",i,free_arg);
-			}
-		}
-		let mut options= ExperimentOptions::default();
-		if option_matches.opt_present("source")
-		{
-			options.external_source = Some(Path::new(&option_matches.opt_str("source").unwrap()).to_path_buf());
-		}
-		if option_matches.opt_present("start_index")
-		{
-			options.start_index = Some(option_matches.opt_str("start_index").unwrap().parse::<usize>().expect("non-usize received from --start_index"));
-		}
-		if option_matches.opt_present("end_index")
-		{
-			options.end_index = Some(option_matches.opt_str("end_index").unwrap().parse::<usize>().expect("non-usize received from --end_index"));
-		}
-		if option_matches.opt_present("where")
-		{
-			let expr = match config_parser::parse_expression(&option_matches.opt_str("where").unwrap()).expect("error parsing the where clause")
-			{
-				config_parser::Token::Expression(expr) => expr,
-				x => panic!("the where clause is not an expression ({:?}), which it should be.",x),
-			};
-			options.where_clause = Some(expr);
-		}
-		if option_matches.opt_present("message")
-		{
-			options.message = Some(option_matches.opt_str("message").unwrap());
-		}
-		return directory_main(&path,&args[0],&plugs,action,options);
-	}
-	else
-	{
-		//let mut f = File::open(&args[1]).expect("file cannot be opened");
-		let mut f = File::open(&path).expect("file cannot be opened");
-		let results_file= if option_matches.opt_present("results")
-		{
-			Some(File::create(option_matches.opt_str("results").unwrap()).expect("Could not create results file"))
-		}
-		else
-		{
-			None
-		};
-		let free_args=&option_matches.free[1..];
-		return file_main(&mut f,&plugs,results_file,free_args);
+		eprintln!("Got error {error}");
 	}
 }
+

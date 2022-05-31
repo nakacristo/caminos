@@ -3,8 +3,15 @@
 ## [next 0.4.4??]
 
 
+### 2022-05-31
+Remove  special_export` as it has been moved to caminos-lib.
+Use `terminal_default_options` instead of building them explicitly.
+Use `terminal_main_normal_opts` instead of typing it again.
+git commit -m "Bump towards c4699f27f2e3d54c28a744eb8159fc6c230e261d."
+
 ### 2022-03-29
 Upgraded dependency rand-0.4 to rand-0.8.
+git commit -m "Upgraded dependency rand-0.4 to rand-0.8."
 
 ### 2022-02-21
 git commit -m "Select local caminos-lib."
