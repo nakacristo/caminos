@@ -1,7 +1,9 @@
 # Change Log
 
-## [next 0.4.4??]
+## [0.5]
 
+### 2022-09-07
+Bump to 0.5.
 
 ### 2022-05-31
 Remove  special_export` as it has been moved to caminos-lib.
