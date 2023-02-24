@@ -1,6 +1,6 @@
 [package]
 name = "caminos"
-version = "0.5.3"
+version = "0.5.4"
 authors = ["Cristóbal Camarero <cristobal.camarero@unican.es>"]
 edition = "2018"
 description = "A modular interconnection network simulator."
@@ -16,5 +16,5 @@ license = "MIT/Apache-2.0"
 getopts = "0.2"
 rand = "0.8"
 backtrace-on-stack-overflow = "0.1"
-caminos-lib = "0.5.3"
+caminos-lib = "0.5.4"
 #caminos-lib = { path = "../caminos-lib" }
