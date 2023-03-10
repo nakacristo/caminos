@@ -1,5 +1,8 @@
 # Change Log
 
+### 2023-03-10
+Change to jemalloc.
+
 ## [0.5.4]
 
 ### 2023-02-24

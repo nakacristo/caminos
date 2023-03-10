@@ -74,6 +74,10 @@ $ caminos --special=export --special_args='Export{topology:RandomRegularGraph{ro
 
 use std::env;
 
+#[cfg(not(target_env = "msvc"))]
+#[global_allocator]
+static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
 use caminos_lib::{get_git_id,get_version_number,Plugs};
 
 

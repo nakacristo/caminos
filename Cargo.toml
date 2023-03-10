@@ -18,3 +18,9 @@ rand = "0.8"
 backtrace-on-stack-overflow = "0.1"
 caminos-lib = "0.5.4"
 #caminos-lib = { path = "../caminos-lib" }
+
+# Using jemalloc seems to reduce a little execution times.
+# Although it also seems to increase a tiny bit the peak memory.
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+tikv-jemallocator = "0.5"
+
