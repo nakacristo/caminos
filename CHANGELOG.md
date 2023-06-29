@@ -1,5 +1,12 @@
 # Change Log
 
+
+## [0.6.0]
+
+### 2023-06-29
+git tag 0.6.0 -m "v0.6.0"
+Publish as 0.6. 
+
 ### 2023-03-10
 Change to jemalloc.
 
